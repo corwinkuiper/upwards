@@ -2,9 +2,6 @@
 
 const __GInternals = {};
 
-//Anonomising function
-
-
 (function () {
 
     let __OldTime;
