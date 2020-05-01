@@ -1,14 +1,25 @@
 let G = {}
 
 const ctx = document.getElementById("GameCanvas").getContext("2d")
-const height = 480
-const width = 480
 
-const fps = 60
+
+let height = 480
+let width = 480
 
 const initialWidth = width / 8
-
 const blockHeight = height / 8
+
+const browserWidth = window.innerWidth || document.body.clientWidth;
+if (width > browserWidth) {
+    width = browserWidth;
+    height = window.innerHeight || document.body.clientHeight;
+    const canvas = document.getElementById("GameCanvas");
+    canvas.width = width;
+    canvas.height = height;
+}
+
+
+
 function init() {
     G = {}
 

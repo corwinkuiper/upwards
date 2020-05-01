@@ -54,6 +54,14 @@ const __GInternals = {};
         __GInternals.mouse.click = false
         __GInternals.mouse.time = milliseconds()
     }
+    window.ontouchstart = function (e) {
+        __GInternals.mouse.click = true
+        __GInternals.mouse.time = milliseconds()
+    }
+    window.ontouchend = function (e) {
+        __GInternals.mouse.click = true
+        __GInternals.mouse.time = milliseconds()
+    }
 
     __GInternals.batch = false
 })();
