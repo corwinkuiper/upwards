@@ -84,10 +84,18 @@ function update(dt) {
 
     cb.x += cb.Direction * Math.pow(G.Score + 2, 2) * delta * Math.max(1, 10 - 2 * G.Score)
 
-    if ((cb.x + cb.width / 2) < leftBoundary)
+    if ((cb.x + cb.width / 2) <= leftBoundary) {
         cb.Direction = 1
-    else if ((cb.x + cb.width / 2) > rightBoundary)
+        cb.x = leftBoundary
+        if (cb.x + cb.width / 2 <= 0) {
+            cb.x = leftBoundary - + cb.width / 2
+        }
+    } else if ((cb.x + cb.width / 2) >= rightBoundary) {
         cb.Direction = -1
+        if (cb.x + cb.width / 2 >= width) {
+            cb.x = rightBoundary - + cb.width / 2
+        }
+    }
 
     const bitLength = G.Bits.length
     let bitRemove = 0
