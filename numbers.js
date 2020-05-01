@@ -82,7 +82,7 @@ N[9] = [
 function drawNumber(n, x, y, w, h, c, a) {
     const digits = n.toString(10).split("").map(function (t) { return parseInt(t) });
     const len = digits.length;
-    const blockWidth = (w / (len * 3 + len - 1));
+    const blockWidth = (w / (len * 4 - 1));
     const blockHeight = (h / 5);
 
     drawBatchStart();
@@ -90,7 +90,7 @@ function drawNumber(n, x, y, w, h, c, a) {
         for (let xSegment = 0; xSegment < 3; xSegment++) {
             for (let ySegment = 0; ySegment < 5; ySegment++) {
                 if (N[digits[digit]][ySegment][xSegment] == 1) {
-                    drawRectangle((x + xSegment * blockWidth + digit * 4 * blockWidth), (y + ySegment * blockHeight), blockWidth, blockHeight, c, a);
+                    drawRectangle(Math.floor(x + xSegment * blockWidth + digit * 4 * blockWidth), Math.floor(y + ySegment * blockHeight), Math.ceil(blockWidth), Math.ceil(blockHeight), c, a);
                 }
             }
         }
