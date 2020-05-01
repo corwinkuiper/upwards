@@ -46,22 +46,18 @@ const __GInternals = {};
     }
 
     __GInternals.mouse = { click: false, time: 0 }
-    window.onpointerdown = function (e) {
+    const mouseStart = function (e) {
         __GInternals.mouse.click = true
         __GInternals.mouse.time = milliseconds()
     }
-    window.onpointerup = function (e) {
+    const mouseEnd = function (e) {
         __GInternals.mouse.click = false
         __GInternals.mouse.time = milliseconds()
     }
-    window.ontouchstart = function (e) {
-        __GInternals.mouse.click = true
-        __GInternals.mouse.time = milliseconds()
-    }
-    window.ontouchend = function (e) {
-        __GInternals.mouse.click = true
-        __GInternals.mouse.time = milliseconds()
-    }
+    document.onpointerdown = mouseStart
+    document.onpointerup = mouseEnd
+    document.ontouchstart = mouseStart
+    document.ontouchend = mouseEnd
 
     __GInternals.batch = false
 })();

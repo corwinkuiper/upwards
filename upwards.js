@@ -18,6 +18,8 @@ if (width > browserWidth) {
     canvas.height = height;
 }
 
+const leftBoundary = width / 2 - initialWidth * 2
+const rightBoundary = width / 2 + initialWidth * 2
 
 
 function init() {
@@ -29,7 +31,7 @@ function init() {
 
         var b = {}
         b.x = width / 2 - initialWidth / 2
-        b.y = height - (height / 8) * i
+        b.y = height - blockHeight * i
         b.width = initialWidth
         G.Blocks.push(b)
     }
@@ -82,9 +84,9 @@ function update(dt) {
 
     cb.x += cb.Direction * Math.pow(G.Score + 2, 2) * delta * Math.max(1, 10 - 2 * G.Score)
 
-    if ((cb.x + cb.width / 2) < width / 4)
+    if ((cb.x + cb.width / 2) < leftBoundary)
         cb.Direction = 1
-    else if ((cb.x + cb.width / 2) > width * 3 / 4)
+    else if ((cb.x + cb.width / 2) > rightBoundary)
         cb.Direction = -1
 
     const bitLength = G.Bits.length
@@ -147,7 +149,7 @@ function update(dt) {
 
         G.Blocks.push(newBlock)
 
-        G.CurrentBlock.x = width / 4
+        G.CurrentBlock.x = leftBoundary
         G.CurrentBlock.width = newBlock.width
 
         G.Score++
@@ -166,7 +168,7 @@ function update(dt) {
 
 function draw() {
 
-    drawNumber(G.Score, 0, 0, width, height, "black", 0.3)
+    drawNumber(G.Score, 0, 0, width, height, "#b2b2b2", 1)
 
     const blocksLength = G.Blocks.length
 
