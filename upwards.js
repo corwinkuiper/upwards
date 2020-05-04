@@ -41,7 +41,7 @@ function init() {
 
     G.Score = 0
     G.CurrentBlock = {}
-    G.CurrentBlock.x = width / 4
+    G.CurrentBlock.x = leftBoundary
     G.CurrentBlock.width = initialBlockWidth
     G.CurrentBlock.Direction = 1
 
