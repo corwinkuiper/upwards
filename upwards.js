@@ -88,12 +88,12 @@ function update(dt) {
     if ((cb.x + cb.width / 2) <= leftBoundary) {
         cb.Direction = 1
         cb.x = leftBoundary
-        if (cb.x + cb.width / 2 <= -width / 2) {
+        if (cb.x + cb.width / 2 <= -width) {
             cb.x = leftBoundary - + cb.width / 2
         }
     } else if ((cb.x + cb.width / 2) >= rightBoundary) {
         cb.Direction = -1
-        if (cb.x + cb.width / 2 >= width / 2) {
+        if (cb.x + cb.width / 2 >= width) {
             cb.x = rightBoundary - + cb.width / 2
         }
     }
