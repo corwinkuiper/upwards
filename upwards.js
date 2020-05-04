@@ -20,8 +20,8 @@ if (width > browserWidth) {
     canvas.height = height;
 }
 
-const leftBoundary = width / 2 - initialBlockWidth * 2
-const rightBoundary = width / 2 + initialBlockWidth * 2
+const leftBoundary = - initialBlockWidth * 2
+const rightBoundary = + initialBlockWidth * 2
 
 function init() {
     G = {}
@@ -31,7 +31,7 @@ function init() {
     for (var i = 0; i < 3; i++) {
 
         var b = {}
-        b.x = width / 2 - initialBlockWidth / 2
+        b.x = -initialBlockWidth / 2
         b.y = height - blockHeight * i
         b.width = initialBlockWidth
         G.Blocks.push(b)
@@ -88,12 +88,12 @@ function update(dt) {
     if ((cb.x + cb.width / 2) <= leftBoundary) {
         cb.Direction = 1
         cb.x = leftBoundary
-        if (cb.x + cb.width / 2 <= 0) {
+        if (cb.x + cb.width / 2 <= -width / 2) {
             cb.x = leftBoundary - + cb.width / 2
         }
     } else if ((cb.x + cb.width / 2) >= rightBoundary) {
         cb.Direction = -1
-        if (cb.x + cb.width / 2 >= width) {
+        if (cb.x + cb.width / 2 >= width / 2) {
             cb.x = rightBoundary - + cb.width / 2
         }
     }
@@ -184,7 +184,7 @@ function draw() {
     drawBatchStart()
     for (let i = 0; i < blocksLength; i++) {
         const b = G.Blocks[i]
-        drawRectangle(b.x, b.y - G.Camera.Offset, b.width, blockHeight, "black")
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset, b.width, blockHeight, "black")
     }
     drawBatchEnd()
 
@@ -192,10 +192,10 @@ function draw() {
     const bitLength = G.Bits.length
     for (let i = 0; i < bitLength; i++) {
         const b = G.Bits[i]
-        drawRectangle(b.x, b.y - G.Camera.Offset, b.width, blockHeight)
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset, b.width, blockHeight)
     }
     drawBatchEnd()
 
     const cb = G.CurrentBlock
-    drawRectangle(cb.x, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset, cb.width, blockHeight)
+    drawRectangle(cb.x + width / 2, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset, cb.width, blockHeight)
 }
