@@ -2,37 +2,41 @@ let G = {}
 
 const ctx = document.getElementById("GameCanvas").getContext("2d")
 
+const initialGameWidth = 480
 
 let height = 480
-let width = 480
+let width = initialGameWidth
 
 const initialBlockWidth = width / 8
 const blockHeight = height / 8
 
-
-
-const browserWidth = window.innerWidth || document.body.clientWidth;
-if (width > browserWidth) {
-    width = browserWidth;
-    height = window.innerHeight || document.body.clientHeight;
-    const canvas = document.getElementById("GameCanvas");
-    canvas.width = width;
-    canvas.height = height;
-}
-
 const leftBoundary = - initialBlockWidth * 2
 const rightBoundary = + initialBlockWidth * 2
+
+function onResize() {
+    console.log("Running Resize")
+    const browserWidth = window.innerWidth || document.body.clientWidth;
+    if (initialGameWidth > browserWidth) {
+        width = browserWidth;
+        height = window.innerHeight || document.body.clientHeight;
+        const canvas = document.getElementById("GameCanvas");
+        canvas.width = width;
+        canvas.height = height;
+    }
+}
+
+onResize();
+window.addEventListener("resize", onResize);
 
 function init() {
     G = {}
 
     G.Blocks = []
 
-    for (var i = 0; i < 3; i++) {
-
+    for (var i = 0; i < 10; i++) {
         var b = {}
         b.x = -initialBlockWidth / 2
-        b.y = height - blockHeight * i
+        b.y = - blockHeight * i
         b.width = initialBlockWidth
         G.Blocks.push(b)
     }
@@ -46,7 +50,7 @@ function init() {
     G.CurrentBlock.Direction = 1
 
     G.Camera = {}
-    G.Camera.Offset = 0
+    G.Camera.Offset = G.Blocks[G.Blocks.length - 1].y;
     G.Camera.New = 0
 
     G.Buttons = {}
@@ -87,14 +91,13 @@ function update(dt) {
 
     if ((cb.x + cb.width / 2) <= leftBoundary) {
         cb.Direction = 1
-        cb.x = leftBoundary
-        if (cb.x + cb.width / 2 <= -width) {
-            cb.x = leftBoundary - + cb.width / 2
+        if (cb.x + cb.width / 2 <= leftBoundary * 2) {
+            cb.x = leftBoundary - cb.width / 2
         }
     } else if ((cb.x + cb.width / 2) >= rightBoundary) {
         cb.Direction = -1
-        if (cb.x + cb.width / 2 >= width) {
-            cb.x = rightBoundary - + cb.width / 2
+        if (cb.x + cb.width / 2 >= rightBoundary * 2) {
+            cb.x = rightBoundary - cb.width / 2
         }
     }
 
@@ -105,7 +108,7 @@ function update(dt) {
         b.x += b.xSpeed
         b.ySpeed += 100 * dt
         b.y += b.ySpeed * dt
-        if (b.y > height - G.Camera.Offset)
+        if (b.y > - G.Camera.Offset)
             bitRemove = i
     }
     G.Bits.splice(0, bitRemove)
@@ -170,7 +173,7 @@ function update(dt) {
         G.Buttons.SpacePressed = false
     }
 
-    G.Camera.Offset += Math.floor((Math.min(G.Blocks[G.Blocks.length - 1].y - height / 2, 0) - G.Camera.Offset) * 0.1)
+    G.Camera.Offset += Math.floor((Math.min(G.Blocks[G.Blocks.length - 1].y, 0) - G.Camera.Offset) * 0.1)
 
 
 }
@@ -184,7 +187,7 @@ function draw() {
     drawBatchStart()
     for (let i = 0; i < blocksLength; i++) {
         const b = G.Blocks[i]
-        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset, b.width, blockHeight, "black")
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height/2, b.width, blockHeight, "black")
     }
     drawBatchEnd()
 
@@ -192,10 +195,10 @@ function draw() {
     const bitLength = G.Bits.length
     for (let i = 0; i < bitLength; i++) {
         const b = G.Bits[i]
-        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset, b.width, blockHeight)
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height/2, b.width, blockHeight)
     }
     drawBatchEnd()
 
     const cb = G.CurrentBlock
-    drawRectangle(cb.x + width / 2, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset, cb.width, blockHeight)
+    drawRectangle(cb.x + width / 2, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset + height/2, cb.width, blockHeight)
 }
