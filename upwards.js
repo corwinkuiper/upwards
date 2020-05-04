@@ -15,7 +15,7 @@ const rightBoundary = + initialBlockWidth * 2
 
 function onResize() {
     console.log("Running Resize")
-    const browserWidth = window.innerWidth || document.body.clientWidth;
+    const browserWidth = screen.width;
     if (initialGameWidth > browserWidth) {
         width = browserWidth;
         height = window.innerHeight || document.body.clientHeight;
