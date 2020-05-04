@@ -6,8 +6,10 @@ const ctx = document.getElementById("GameCanvas").getContext("2d")
 let height = 480
 let width = 480
 
-const initialWidth = width / 8
+const initialBlockWidth = width / 8
 const blockHeight = height / 8
+
+
 
 const browserWidth = window.innerWidth || document.body.clientWidth;
 if (width > browserWidth) {
@@ -18,9 +20,8 @@ if (width > browserWidth) {
     canvas.height = height;
 }
 
-const leftBoundary = width / 2 - initialWidth * 2
-const rightBoundary = width / 2 + initialWidth * 2
-
+const leftBoundary = width / 2 - initialBlockWidth * 2
+const rightBoundary = width / 2 + initialBlockWidth * 2
 
 function init() {
     G = {}
@@ -30,9 +31,9 @@ function init() {
     for (var i = 0; i < 3; i++) {
 
         var b = {}
-        b.x = width / 2 - initialWidth / 2
+        b.x = width / 2 - initialBlockWidth / 2
         b.y = height - blockHeight * i
-        b.width = initialWidth
+        b.width = initialBlockWidth
         G.Blocks.push(b)
     }
 
@@ -41,7 +42,7 @@ function init() {
     G.Score = 0
     G.CurrentBlock = {}
     G.CurrentBlock.x = width / 4
-    G.CurrentBlock.width = initialWidth
+    G.CurrentBlock.width = initialBlockWidth
     G.CurrentBlock.Direction = 1
 
     G.Camera = {}
