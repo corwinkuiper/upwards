@@ -49,6 +49,8 @@ function init() {
     G.CurrentBlock.width = initialBlockWidth
     G.CurrentBlock.Direction = 1
 
+    G.Restart = false
+
     G.Camera = {}
     G.Camera.Offset = G.Blocks[G.Blocks.length - 1].y;
     G.Camera.New = 0
@@ -87,6 +89,31 @@ function update(dt) {
 
     G.Time = milliseconds()
 
+    const bitLength = G.Bits.length
+    let bitRemove = 0
+    for (var i = 0; i < bitLength; i++) {
+        var b = G.Bits[i]
+        b.x += b.xSpeed
+        b.ySpeed += 200 * dt
+        b.y += b.ySpeed * dt
+        if (b.y > - G.Camera.Offset)
+            bitRemove = i + 1
+    }
+    G.Bits.splice(0, bitRemove)
+
+    if (G.Restart) {
+        if (G.Bits.length == 0) {
+            restart()
+        }
+        if (isSpace() && !G.Buttons.SpacePressed) {
+            G.Buttons.SpacePressed = true
+            restart()
+        } else if (!isSpace()) {
+            G.Buttons.SpacePressed = false
+        }
+        return
+    }
+
     cb.x += cb.Direction * Math.pow(G.Score + 2, 2) * delta * Math.max(1, 10 - 2 * G.Score)
 
     if ((cb.x + cb.width / 2) <= leftBoundary) {
@@ -101,17 +128,6 @@ function update(dt) {
         }
     }
 
-    const bitLength = G.Bits.length
-    let bitRemove = 0
-    for (var i = 0; i < bitLength; i++) {
-        var b = G.Bits[i]
-        b.x += b.xSpeed
-        b.ySpeed += 100 * dt
-        b.y += b.ySpeed * dt
-        if (b.y > - G.Camera.Offset)
-            bitRemove = i
-    }
-    G.Bits.splice(0, bitRemove)
 
     if (isSpace() && !G.Buttons.SpacePressed) {
         //Time to place the block
@@ -120,21 +136,11 @@ function update(dt) {
         const newBlock = {}
         const cb = G.CurrentBlock
 
-        //Check if they placed the block right
-        //Check if the left is *outside* range
-        //Check if right is outside range
-
-        if ((cb.x - last.x) > last.width || (cb.x + cb.width - last.x) < 0) {
-            restart()
-            return
-        }
-
-
         if (Math.floor(cb.x) < Math.floor(last.x)) {
             const bit = {}
 
             bit.x = cb.x
-            bit.width = last.x - cb.x
+            bit.width = Math.min(last.x - cb.x, cb.width)
             bit.y = last.y - blockHeight
             bit.xSpeed = -1
             bit.ySpeed = 0
@@ -145,8 +151,8 @@ function update(dt) {
         if (Math.floor(cb.x + cb.width) > Math.floor(last.x + last.width)) {
             const bit = {}
 
-            bit.x = last.x + last.width
-            bit.width = (cb.x + cb.width) - (last.x + last.width)
+            bit.x = Math.max(last.x + last.width, cb.x)
+            bit.width = Math.min((cb.x + cb.width) - (last.x + last.width), cb.width)
             bit.y = last.y - blockHeight
             bit.xSpeed = 1
             bit.ySpeed = 0
@@ -154,19 +160,23 @@ function update(dt) {
             G.Bits.push(bit)
         }
 
+        //Check if they placed the block right
+        //Check if the left is *outside* range
+        //Check if right is outside range
 
-        newBlock.x = Math.floor(Math.max(cb.x, last.x))
-        newBlock.y = Math.floor(last.y - blockHeight)
-        newBlock.width = Math.ceil(Math.min((last.x + last.width) - cb.x, cb.x - last.x + last.width))
+        if ((cb.x - last.x) > last.width || (cb.x + cb.width - last.x) < 0) {
+            G.Restart = true;
+        } else {
+            newBlock.x = Math.floor(Math.max(cb.x, last.x))
+            newBlock.y = Math.floor(last.y - blockHeight)
+            newBlock.width = Math.ceil(Math.min((last.x + last.width) - cb.x, cb.x - last.x + last.width))
 
-        G.Blocks.push(newBlock)
+            G.Blocks.push(newBlock)
 
-        G.CurrentBlock.x = leftBoundary
-        G.CurrentBlock.width = newBlock.width
-
-        G.Score++
-
-        return
+            G.CurrentBlock.x = leftBoundary
+            G.CurrentBlock.width = newBlock.width
+            G.Score++
+        }
 
     }
     if (!isSpace()) {
@@ -187,7 +197,7 @@ function draw() {
     drawBatchStart()
     for (let i = 0; i < blocksLength; i++) {
         const b = G.Blocks[i]
-        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height/2, b.width, blockHeight, "black")
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height / 2, b.width, blockHeight, "black")
     }
     drawBatchEnd()
 
@@ -195,10 +205,12 @@ function draw() {
     const bitLength = G.Bits.length
     for (let i = 0; i < bitLength; i++) {
         const b = G.Bits[i]
-        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height/2, b.width, blockHeight)
+        drawRectangle(b.x + width / 2, b.y - G.Camera.Offset + height / 2, b.width, blockHeight)
     }
     drawBatchEnd()
 
-    const cb = G.CurrentBlock
-    drawRectangle(cb.x + width / 2, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset + height/2, cb.width, blockHeight)
+    if (!G.Restart) {
+        const cb = G.CurrentBlock
+        drawRectangle(cb.x + width / 2, G.Blocks[blocksLength - 1].y - blockHeight - G.Camera.Offset + height / 2, cb.width, blockHeight)
+    }
 }
